@@ -69,7 +69,7 @@ public class ArticleRestControllerTest {
 
     @Test
     public void saveNewArticle() throws Exception {
-        String articleJson = "{\"id\":\"20\","
+        String articleJson = "{\"id\":\"200\","
                 + "\"title\": \"latest science shows that potato chips are better for you than sugar\","
                 + "\"date\":\"2016-09-23\","
                 + "\"body\":\"some text, potentially containing simple markup about how potato chips are great\","
@@ -92,13 +92,12 @@ public class ArticleRestControllerTest {
         this.mockMvc.perform(post("/articles")
                 .contentType(contentType)
                 .content(articleJson))
-    //            .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
 
     @Test
     public void saveArticleNoTitle() throws Exception {
-        String articleJson = "{\"id\":\"20\","
+        String articleJson = "{\"id\":\"40\","
                 + "\"date\":\"20160923\","
                 + "\"body\":\"some text, potentially containing simple markup about how potato chips are great\","
                 + "\"tags\":[\"health\",\"life\",\"balance\"]}";
@@ -107,7 +106,7 @@ public class ArticleRestControllerTest {
                 .contentType(contentType)
                 .content(articleJson))
                 //          .andDo(print())
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -121,8 +120,7 @@ public class ArticleRestControllerTest {
         this.mockMvc.perform(post("/articles")
                 .contentType(contentType)
                 .content(articleJson))
-                //          .andDo(print())
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -136,8 +134,7 @@ public class ArticleRestControllerTest {
         this.mockMvc.perform(post("/articles")
                 .contentType(contentType)
                 .content(articleJson))
-     //           .andDo(print())
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -152,10 +149,8 @@ public class ArticleRestControllerTest {
                 .contentType(contentType)
                 .content(articleJson))
       //          .andDo(print())
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isBadRequest());
     }
-
-
 
     @Test
     public void readSingleArticle() throws Exception {
@@ -187,7 +182,7 @@ public class ArticleRestControllerTest {
     }
 
     @Test
-    public void readTagNoArticle() throws Exception {
+    public void readTagNotAvailableTag() throws Exception {
         mockMvc.perform(get("/tag/nolife/20160922"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
@@ -213,5 +208,26 @@ public class ArticleRestControllerTest {
                 .andExpect(jsonPath("$.count", is(1)))
                 .andExpect(jsonPath("$.articles", hasSize(1)))
                 .andExpect(jsonPath("$.related_tags", hasSize(0)));
+    }
+
+    @Test
+    public void readTagNoArticleOnDate() throws Exception {
+
+        mockMvc.perform(get("/tag/life/20180924"))
+                //               .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.tag", is("life")))
+                .andExpect(jsonPath("$.count", is(0)))
+                .andExpect(jsonPath("$.articles", hasSize(0)))
+                .andExpect(jsonPath("$.related_tags", hasSize(0)));
+    }
+
+    @Test
+    public void readTagInvalidDateFormat() throws Exception {
+
+        mockMvc.perform(get("/tag/life/2018-09-24"))
+                .andExpect(status().isBadRequest());
+
     }
 }

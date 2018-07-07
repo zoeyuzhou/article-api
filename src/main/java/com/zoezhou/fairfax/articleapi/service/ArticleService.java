@@ -6,14 +6,10 @@ import com.zoezhou.fairfax.articleapi.exception.InvalidRequestException;
 import com.zoezhou.fairfax.articleapi.model.Article;
 import com.zoezhou.fairfax.articleapi.dto.TagSummary;
 import com.zoezhou.fairfax.articleapi.repository.ArticleRepository;
-import com.zoezhou.fairfax.articleapi.repository.ArticleRepositoryCustom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;

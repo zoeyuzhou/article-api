@@ -12,4 +12,8 @@ public class InvalidRequestException extends RuntimeException {
     public InvalidRequestException( String errMessage ) {
         super(errMessage);
     }
+
+    public InvalidRequestException( String errMessage, Throwable ex ) {
+        super(errMessage, ex);
+    }
 }
