@@ -74,4 +74,16 @@ public class ArticleService {
 
         return savedArticle;
     }
+
+    public boolean articleExists(Article article) {
+        boolean articleExists;
+      //  if (article != null && article.getId() != null ) {
+        if (article != null && article.getId() != null ) {
+            articleExists = articleRepository.existsById(article.getId());
+        } else {
+            throw new InvalidRequestException("Article and article ID should not be null");
+        }
+
+        return articleExists;
+    }
 }

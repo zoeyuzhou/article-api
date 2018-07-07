@@ -58,7 +58,7 @@ public class ArticleRestControllerTest {
 
         String[] ids = {"1","2","3","4","5","6","7","8","9","10","11"};
         for (String id: ids) {
-            articleList.add(articleRepository.save(new Article(id
+            articleList.add(articleRepository.save(new Article( id
                     ,id + " latest science shows that potato chips are better for you than sugar"
                     , LocalDate.of(2016,9,22)
                     , id + " some text, potentially containing simple markup about how potato chips are great"
@@ -78,7 +78,7 @@ public class ArticleRestControllerTest {
         this.mockMvc.perform(post("/articles")
                 .contentType(contentType)
                 .content(articleJson))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -92,7 +92,7 @@ public class ArticleRestControllerTest {
         this.mockMvc.perform(post("/articles")
                 .contentType(contentType)
                 .content(articleJson))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().isOk());
     }
 
     @Test
