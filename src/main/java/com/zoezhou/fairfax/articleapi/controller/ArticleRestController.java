@@ -51,17 +51,17 @@ public class ArticleRestController {
         return articleService.findById(id);
     }
 
-    @GetMapping("/tag/{tagName}/{dateStr}")
+    @GetMapping("/tags/{tagName}/{date}")
     TagSummary readTagSummary(@PathVariable String tagName,
-                              @PathVariable String dateStr) {
-        LocalDate date;
+                              @PathVariable String date) {
+        LocalDate localDate;
         try {
-            date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(ConfigConstants.DATE_PATTERN));
+            localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(ConfigConstants.DATE_PATTERN));
         } catch (DateTimeParseException ex ) {
             throw new InvalidRequestException("Cannot parse date in url", ex);
         }
 
-        return articleService.buildTagSummaryByTagNameAndDate(tagName, date);
+        return articleService.buildTagSummaryByTagNameAndDate(tagName, localDate);
     }
 
     @GetMapping("/articles")

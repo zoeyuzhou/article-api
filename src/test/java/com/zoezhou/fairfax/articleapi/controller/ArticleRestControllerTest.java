@@ -259,7 +259,7 @@ public class ArticleRestControllerTest {
 
     @Test
     public void readTag_200_OK() throws Exception {
-        mockMvc.perform(get("/tag/fitness/20160922"))
+        mockMvc.perform(get("/tags/fitness/20160922"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$.tag", is("fitness")))
@@ -270,7 +270,7 @@ public class ArticleRestControllerTest {
 
     @Test
     public void readTagNotAvailableTag_200_OK() throws Exception {
-        mockMvc.perform(get("/tag/nolife/20160922"))
+        mockMvc.perform(get("/tags/nolife/20160922"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$.tag", is("nolife")))
@@ -285,9 +285,9 @@ public class ArticleRestControllerTest {
                 " 20 latest science shows that potato chips are better for you than sugar"
                 , LocalDate.of(2016,9,24)
                 , "20 some text, potentially containing simple markup about how potato chips are great"
-                , new HashSet<>(Arrays.asList("life", "education")))));
+                , new HashSet<>(Arrays.asList("life")))));
 
-        mockMvc.perform(get("/tag/life/20160924"))
+        mockMvc.perform(get("/tags/life/20160924"))
  //               .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
@@ -299,8 +299,7 @@ public class ArticleRestControllerTest {
 
     @Test
     public void readTagNoArticleOnDate_200_OK() throws Exception {
-
-        mockMvc.perform(get("/tag/life/20180924"))
+        mockMvc.perform(get("/tags/life/20180924"))
                 //               .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
@@ -318,7 +317,7 @@ public class ArticleRestControllerTest {
                 , "20 some text, potentially containing simple markup about how potato chips are great"
                 , new HashSet<>(Arrays.asList("life", "education")))));
 
-        mockMvc.perform(get("/tag/life/2018-09-24"))
+        mockMvc.perform(get("/tags/life/2018-09-24"))
                 .andExpect(status().isBadRequest());
     }
 }
