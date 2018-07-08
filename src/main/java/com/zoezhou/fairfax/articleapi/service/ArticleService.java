@@ -1,6 +1,7 @@
 package com.zoezhou.fairfax.articleapi.service;
 
 import com.zoezhou.fairfax.articleapi.ConfigConstants;
+import com.zoezhou.fairfax.articleapi.dto.ArticleDetails;
 import com.zoezhou.fairfax.articleapi.exception.ArticleResouceNotFoundException;
 import com.zoezhou.fairfax.articleapi.exception.InvalidRequestException;
 import com.zoezhou.fairfax.articleapi.model.Article;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -26,7 +28,6 @@ public class ArticleService {
     private EntityManager entityManager;
 
     public TagSummary buildTagSummaryByTagNameAndDate(String tag, LocalDate date) {
-
         List<Article> articleList = articleRepository.findByDateTagAndCountOrderByTimeStampDesc(date
                 , tag, ConfigConstants.ARTICLE_NUMBER_IN_TAGSUMMARY);
 
@@ -64,26 +65,31 @@ public class ArticleService {
                 .orElseThrow(ArticleResouceNotFoundException::new);
     }
 
-    public Article saveArticle(Article article) {
-        Article savedArticle = null;
-        if ( article != null && article.getId() != null && !article.getId().isEmpty()) {
+    public Article updateArticle(ArticleDetails articleDetails) {
+        Article savedArticle;
+
+        if ( articleDetails != null  && articleDetails.getId() != null && !articleDetails.getId().isEmpty()) {
+            Article article = findById(articleDetails.getId());
+            article.setTitle(articleDetails.getTitle());
+            article.setDate(articleDetails.getDate());
+            article.setBody(articleDetails.getBody());
+            article.setTags(articleDetails.getTags());
+            article.setTimeStamp(LocalTime.now());
             savedArticle = articleRepository.save(article);
         } else {
-            throw new InvalidRequestException("Article and article ID should not be null");
+            throw new InvalidRequestException("Article should not be null");
         }
 
         return savedArticle;
     }
 
-    public boolean articleExists(Article article) {
-        boolean articleExists;
-      //  if (article != null && article.getId() != null ) {
-        if (article != null && article.getId() != null ) {
-            articleExists = articleRepository.existsById(article.getId());
-        } else {
-            throw new InvalidRequestException("Article and article ID should not be null");
+    public Article addArticle(ArticleDetails articleDetails) {
+        Article savedArticle = null;
+        if ( articleDetails != null ) {
+            Article article = new Article(articleDetails.getTitle()
+                    , articleDetails.getDate(), articleDetails.getBody(), articleDetails.getTags());
+            savedArticle = articleRepository.save(article);
         }
-
-        return articleExists;
+        return savedArticle;
     }
 }

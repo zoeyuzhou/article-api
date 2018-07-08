@@ -1,11 +1,10 @@
 package com.zoezhou.fairfax.articleapi.controller;
 
 import com.zoezhou.fairfax.articleapi.ConfigConstants;
-import com.zoezhou.fairfax.articleapi.exception.ArticleResouceNotFoundException;
+import com.zoezhou.fairfax.articleapi.dto.ArticleDetails;
 import com.zoezhou.fairfax.articleapi.exception.InvalidRequestException;
 import com.zoezhou.fairfax.articleapi.model.Article;
 import com.zoezhou.fairfax.articleapi.dto.TagSummary;
-import com.zoezhou.fairfax.articleapi.repository.ArticleRepository;
 import com.zoezhou.fairfax.articleapi.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +16,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class ArticleRestController {
@@ -27,19 +24,24 @@ public class ArticleRestController {
     private ArticleService articleService;
 
     @PostMapping("/articles")
-    ResponseEntity saveArticle(@RequestBody Article article) {
-        boolean articleExists = articleService.articleExists(article);
-        Article savedArticle = articleService.saveArticle(article);
+    ResponseEntity saveArticle(@RequestBody ArticleDetails articleDetails) {
+        Article savedArticle;
         ResponseEntity responseEntity;
-        if ( articleExists ) {
-            responseEntity = ResponseEntity.ok().build();
+        if ( articleDetails != null ) {
+            if ( articleDetails.getId() != null && !articleDetails.getId().isEmpty() ) {
+                savedArticle = articleService.updateArticle(articleDetails);
+                responseEntity = ResponseEntity.ok().build();
+            } else {
+                savedArticle = articleService.addArticle(articleDetails);
+                URI location = ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(savedArticle.getId())
+                        .toUri();
+                responseEntity = ResponseEntity.created(location).build();
+            }
         } else {
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(savedArticle.getId())
-                    .toUri();
-            responseEntity = ResponseEntity.created(location).build();
+            throw new InvalidRequestException("Article and article ID should not be null");
         }
         return responseEntity;
     }
@@ -62,5 +64,8 @@ public class ArticleRestController {
         return articleService.buildTagSummaryByTagNameAndDate(tagName, date);
     }
 
-
+    @GetMapping("/articles")
+    Collection<Article> readArticles()  {
+        return articleService.readArticles();
+    }
 }

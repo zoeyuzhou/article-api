@@ -13,11 +13,16 @@ import java.util.Set;
 public class Article {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private String id;
-    private String title;
-    private LocalDate date;
-    private String body;
 
+    @Column(nullable = false)
+    private String title;
+
+    private LocalDate date;
+
+    @Column(nullable = false)
+    private String body;
 
     @ElementCollection
     private Set<String> tags = new HashSet<>();
@@ -27,8 +32,7 @@ public class Article {
 
     private Article() {} // JPA only
 
-    public Article(String id, String title, LocalDate date, String body, Set<String> tags) {
-        this.id = id;
+    public Article( String title, LocalDate date, String body, Set<String> tags) {
         this.title = title;
         this.date = date;
         this.body = body;
@@ -36,7 +40,9 @@ public class Article {
         this.timeStamp = LocalTime.now();
     }
 
-
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getId() {
         return id;
@@ -58,4 +64,23 @@ public class Article {
         return tags;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
+    public void setTimeStamp(LocalTime timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 }

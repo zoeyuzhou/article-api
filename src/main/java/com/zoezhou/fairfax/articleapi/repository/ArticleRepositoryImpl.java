@@ -30,4 +30,10 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 .setParameter("date", date)
                 .getSingleResult().toString());
     }
+
+    @Override
+    public String findMaxId() {
+        return entityManager.createQuery("select max(a.id) from Article a")
+                .getSingleResult().toString();
+    }
 }

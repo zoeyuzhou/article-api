@@ -8,4 +8,5 @@ import java.util.List;
 public interface ArticleRepositoryCustom {
     List<Article> findByDateTagAndCountOrderByTimeStampDesc(LocalDate date, String tag, int count);
     Long countByDateAndTag(LocalDate date, String tag);
+    String findMaxId();
 }
