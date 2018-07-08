@@ -188,7 +188,6 @@ public class ArticleRestControllerTest {
         this.mockMvc.perform(post("/articles")
                 .contentType(contentType)
                 .content(articleJson))
-      //          .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
